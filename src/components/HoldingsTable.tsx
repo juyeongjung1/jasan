@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Account, AssetHolding, AssetCategory } from '@/types';
-import { HoldingAnalysis, formatCurrencyJpy, formatPercent } from '@/lib/calculations';
+import { HoldingAnalysis, formatCurrencyJpy, formatPercent, getProductGrouping } from '@/lib/calculations';
 import { CATEGORY_CONFIG, CURRENCY_CONFIG } from '@/lib/constants';
 import {
   Language,
@@ -21,6 +21,7 @@ import {
   Repeat,
   Info,
   Radio,
+  Sparkles,
 } from 'lucide-react';
 
 interface HoldingsTableProps {
@@ -29,6 +30,7 @@ interface HoldingsTableProps {
   onOpenAddModal: () => void;
   onEditHolding: (holding: AssetHolding) => void;
   onDeleteHolding: (id: string) => void;
+  onSelectProduct?: (productKey: string, productName: string, amountJpy?: number) => void;
   lang?: Language;
   isMasked?: boolean;
 }
@@ -39,6 +41,7 @@ export const HoldingsTable: React.FC<HoldingsTableProps> = ({
   onOpenAddModal,
   onEditHolding,
   onDeleteHolding,
+  onSelectProduct,
   lang = 'ko',
   isMasked = true,
 }) => {
@@ -150,9 +153,18 @@ export const HoldingsTable: React.FC<HoldingsTableProps> = ({
                   <td className="py-3.5 px-3">
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-slate-900 dark:text-white text-xs">
-                          {translateHoldingName(holding.name, lang)}
-                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const group = getProductGrouping(holding);
+                            onSelectProduct?.(group.key, holding.name, item.currentValJpy);
+                          }}
+                          className="font-bold text-slate-900 dark:text-white text-xs hover:text-indigo-600 dark:hover:text-indigo-400 hover:underline text-left flex items-center gap-1 transition"
+                          title={lang === 'ko' ? '클릭하여 구성종목 보기' : 'クリックして構成銘柄を確認'}
+                        >
+                          <span>{translateHoldingName(holding.name, lang)}</span>
+                          <Sparkles className="w-3 h-3 text-indigo-500 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </button>
                         {item.recurringPlan && item.recurringPlan.isActive && (
                           <span
                             className="inline-flex items-center gap-0.5 bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 text-[10px] px-1.5 py-0.5 rounded font-bold"

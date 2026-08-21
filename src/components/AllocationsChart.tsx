@@ -5,13 +5,14 @@ import { CurrencyExposure, CategoryAllocation, AccountAllocation, ProductAllocat
 import { formatPercent } from '@/lib/calculations';
 import { Language, translateAccountName, translateProductName } from '@/lib/i18n';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { PieChart as PieIcon, Coins, Layers, Landmark, Sparkles, Users } from 'lucide-react';
+import { PieChart as PieIcon, Coins, Layers, Landmark, Sparkles, Users, ChevronRight } from 'lucide-react';
 
 interface AllocationsChartProps {
   currencyExposures: CurrencyExposure[];
   categoryAllocations: CategoryAllocation[];
   accountAllocations: AccountAllocation[];
   productAllocations: ProductAllocation[];
+  onSelectProduct?: (productKey: string, productName: string, amountJpy?: number, percentage?: number) => void;
   lang?: Language;
 }
 
@@ -22,6 +23,7 @@ export const AllocationsChart: React.FC<AllocationsChartProps> = ({
   categoryAllocations,
   accountAllocations,
   productAllocations,
+  onSelectProduct,
   lang = 'ko',
 }) => {
   const [activeTab, setActiveTab] = useState<TabType>('product');
@@ -30,6 +32,7 @@ export const AllocationsChart: React.FC<AllocationsChartProps> = ({
     switch (activeTab) {
       case 'product':
         return productAllocations.map((d) => ({
+          id: d.id,
           name: translateProductName(d.name, lang),
           value: d.percentage,
           percentage: d.percentage,
@@ -39,6 +42,7 @@ export const AllocationsChart: React.FC<AllocationsChartProps> = ({
         }));
       case 'category':
         return categoryAllocations.map((d) => ({
+          id: d.category,
           name: d.label,
           value: d.percentage,
           percentage: d.percentage,
@@ -46,6 +50,7 @@ export const AllocationsChart: React.FC<AllocationsChartProps> = ({
         }));
       case 'currency':
         return currencyExposures.map((d) => ({
+          id: d.currency,
           name:
             lang === 'ko'
               ? d.currency === 'USD'
@@ -60,6 +65,7 @@ export const AllocationsChart: React.FC<AllocationsChartProps> = ({
         }));
       case 'account':
         return accountAllocations.map((d) => ({
+          id: d.accountId,
           name: translateAccountName(d.name, lang),
           value: d.percentage,
           percentage: d.percentage,
@@ -69,6 +75,12 @@ export const AllocationsChart: React.FC<AllocationsChartProps> = ({
   };
 
   const chartData = getActiveData();
+
+  const handleItemClick = (item: any) => {
+    if (activeTab === 'product' && onSelectProduct) {
+      onSelectProduct(item.id, item.name, undefined, item.percentage);
+    }
+  };
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -88,6 +100,12 @@ export const AllocationsChart: React.FC<AllocationsChartProps> = ({
               <span>{lang === 'ko' ? '🔗 통합 계좌:' : '🔗 合算口座:'} {data.mergedAccounts.map((a: string) => translateAccountName(a, lang)).join(' + ')}</span>
             </div>
           )}
+          {activeTab === 'product' && (
+            <div className="pt-1 border-t border-slate-800 text-[10px] text-amber-300 flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-amber-400" />
+              <span>{lang === 'ko' ? '클릭하여 구성종목 보기' : 'クリックして構成銘柄を確認'}</span>
+            </div>
+          )}
         </div>
       );
     }
@@ -103,16 +121,22 @@ export const AllocationsChart: React.FC<AllocationsChartProps> = ({
             <PieIcon className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              {lang === 'ko' ? '포트폴리오 배분 비중 (리스크 분산)' : 'ポートフォリオ配分比率 (分散状況)'}
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                {lang === 'ko' ? '포트폴리오 배분 비중 (리스크 분산)' : 'ポートフォリオ配分比率 (分散状況)'}
+              </h2>
               {activeTab === 'product' && (
                 <span className="bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs px-2 py-0.5 rounded-full font-bold">
                   {lang === 'ko' ? '상품별 정밀 분해 (부부 합산)' : '商品別詳細 (夫婦合算)'}
                 </span>
               )}
-            </h2>
+            </div>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              {lang === 'ko'
+              {activeTab === 'product'
+                ? lang === 'ko'
+                  ? '💡 각 상품을 클릭하면 공식 최신 구성종목 및 편입비중을 확인하실 수 있습니다'
+                  : '💡 各商品をクリックすると、公式の最新構成銘柄・組入比率ポップアップを表示します'
+                : lang === 'ko'
                 ? '상품별(ZTech20 부부 합산) / 자산 종류별 / 통화별 환노출 / 계좌별 다각도 분석'
                 : '商品別（Zテック20夫婦合算）/ 資産種別 / 通貨別為替 / 口座別の一元管理'}
             </p>
@@ -189,6 +213,8 @@ export const AllocationsChart: React.FC<AllocationsChartProps> = ({
                 outerRadius={88}
                 paddingAngle={2}
                 dataKey="value"
+                onClick={handleItemClick}
+                cursor={activeTab === 'product' ? 'pointer' : 'default'}
               >
                 {chartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
@@ -204,7 +230,12 @@ export const AllocationsChart: React.FC<AllocationsChartProps> = ({
           {chartData.map((item, index) => (
             <div
               key={index}
-              className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-xs hover:border-slate-300 dark:hover:border-slate-700 transition"
+              onClick={() => handleItemClick(item)}
+              className={`flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-xs transition ${
+                activeTab === 'product'
+                  ? 'hover:border-indigo-500/50 hover:bg-indigo-50/30 dark:hover:bg-indigo-950/20 cursor-pointer group'
+                  : 'hover:border-slate-300 dark:hover:border-slate-700'
+              }`}
             >
               <div className="flex items-center gap-2 min-w-0 pr-2">
                 <span
@@ -213,7 +244,7 @@ export const AllocationsChart: React.FC<AllocationsChartProps> = ({
                 />
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="font-bold text-slate-900 dark:text-white truncate">
+                    <span className="font-bold text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
                       {item.name}
                     </span>
                     {(item as any).mergedAccounts && (item as any).mergedAccounts.length > 1 && (
@@ -231,13 +262,16 @@ export const AllocationsChart: React.FC<AllocationsChartProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5 shrink-0">
+              <div className="flex items-center gap-2 shrink-0">
                 <span
                   className="font-bold text-xs px-2.5 py-1 rounded-full text-white shrink-0 font-mono shadow-sm"
                   style={{ backgroundColor: item.color }}
                 >
                   {formatPercent(item.percentage)}
                 </span>
+                {activeTab === 'product' && (
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-500 group-hover:translate-x-0.5 transition-transform" />
+                )}
               </div>
             </div>
           ))}
