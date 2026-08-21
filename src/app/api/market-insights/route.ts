@@ -8,7 +8,7 @@ export interface USStockData {
   price: number;
   change: number;
   changePct: number;
-  relatedFunds: string[]; // 影響を与えるユーザー保有投信
+  relatedFunds: string[];
 }
 
 export interface MarketInsightSummary {
@@ -32,76 +32,73 @@ export interface MarketInsightSummary {
 
 export async function GET() {
   try {
-    // 米国主要ハイテク株（Magnificent 7 + 主要テック）の動向
-    // FANG+、Zテック20、NASDAQ100、S&P500に最も大きく寄与する代表銘柄
     const majorStocks: USStockData[] = [
       {
         symbol: 'NVDA',
-        name: 'エヌビディア (NVIDIA)',
+        name: '엔비디아 (NVIDIA)',
         price: 128.5,
         change: -2.3,
         changePct: -1.76,
-        relatedFunds: ['FANG+', 'Zテック20', 'レバナス', 'S&P500'],
+        relatedFunds: ['FANG+', 'Z테크20', '레바나스', 'S&P500'],
       },
       {
         symbol: 'AAPL',
-        name: 'アップル (Apple)',
+        name: '애플 (Apple)',
         price: 224.8,
         change: 1.1,
         changePct: 0.49,
-        relatedFunds: ['FANG+', 'レバナス', 'S&P500', '東京海上外国株式'],
+        relatedFunds: ['FANG+', '레바나스', 'S&P500', '외국주식인덱스'],
       },
       {
         symbol: 'MSFT',
-        name: 'マイクロソフト (Microsoft)',
+        name: '마이크로소프트 (Microsoft)',
         price: 442.1,
         change: -1.8,
         changePct: -0.41,
-        relatedFunds: ['FANG+', 'Zテック20', 'レバナス', 'S&P500', '東京海上外国株式'],
+        relatedFunds: ['FANG+', 'Z테크20', '레바나스', 'S&P500', '외국주식인덱스'],
       },
       {
         symbol: 'GOOGL',
-        name: 'アルファベット (Google)',
+        name: '알파벳 (Google)',
         price: 178.2,
         change: -0.9,
         changePct: -0.5,
-        relatedFunds: ['FANG+', 'Zテック20', 'レバナス', 'S&P500'],
+        relatedFunds: ['FANG+', 'Z테크20', '레바나스', 'S&P500'],
       },
       {
         symbol: 'AMZN',
-        name: 'アマゾン (Amazon)',
+        name: '아마존 (Amazon)',
         price: 182.4,
         change: 0.6,
         changePct: 0.33,
-        relatedFunds: ['FANG+', 'Zテック20', 'レバナス', 'S&P500'],
+        relatedFunds: ['FANG+', 'Z테크20', '레바나스', 'S&P500'],
       },
       {
         symbol: 'META',
-        name: 'メタ・プラットフォームズ (Meta)',
+        name: '메타 (Meta)',
         price: 528.0,
         change: -4.5,
         changePct: -0.85,
-        relatedFunds: ['FANG+', 'Zテック20', 'レバナス', 'S&P500'],
+        relatedFunds: ['FANG+', 'Z테크20', '레바나스', 'S&P500'],
       },
       {
         symbol: 'TSLA',
-        name: 'テスラ (Tesla)',
+        name: '테슬라 (Tesla)',
         price: 215.3,
         change: 3.2,
         changePct: 1.51,
-        relatedFunds: ['FANG+', 'レバナス', 'S&P500'],
+        relatedFunds: ['FANG+', '레바나스', 'S&P500'],
       },
       {
         symbol: 'AVGO',
-        name: 'ブロードコム (Broadcom)',
+        name: '브로드컴 (Broadcom)',
         price: 165.2,
         change: -2.1,
         changePct: -1.26,
-        relatedFunds: ['FANG+', 'Zテック20', 'レバナス', 'S&P500'],
+        relatedFunds: ['FANG+', 'Z테크20', '레바나스', 'S&P500'],
       },
     ];
 
-    // 米国市場および為替の要因分析
     const marketInsights: MarketInsightSummary = {
       updatedAt: new Date().toISOString(),
       usMarketSummary: {
@@ -109,40 +106,40 @@ export async function GET() {
         sp500ChangePct: -0.22,
         us10yYield: 3.88,
         us10yYieldChange: -0.03,
-        usdjpyChange: -0.35, // 0.35円の円高
+        usdjpyChange: -0.35,
       },
       keyDrivers: [
         {
-          title: '米半導体・AI関連株の短期利益確定売り',
+          title: '미국 반도체·AI 관련주 단기 차익 실현 매물 출회',
           impact: 'negative',
           category: 'tech',
           description:
-            '前夜の米国市場でエヌビディア（-1.76%）やブロードコム（-1.26%）など半導体主力株が軟調に推移。これらが翌日の「FANG+」および「Zテック20」の基準価額下落の主要因となりました。',
-          affectedFunds: ['iFreeNext FANG+', 'Zテック20', '楽天レバナス'],
+            '전날 밤 미국 시장에서 엔비디아(-1.76%)와 브로드컴(-1.26%) 등 반도체 주도주가 조정을 받으며, 익일 반영되는 FANG+ 및 Z테크20의 기준가 하락 요인으로 작용했습니다.',
+          affectedFunds: ['iFreeNext FANG+', 'Z테크20', '레바나스'],
         },
         {
-          title: 'ドル円レートの小幅な円高進行（為替要因）',
+          title: '엔/달러 환율의 소폭 강세(환율 요인)',
           impact: 'negative',
           category: 'fx',
           description:
-            '為替レートが前日の153.8円から153.5円へと約0.3円円高方向に振れたため、為替ヘッジなしの海外投信（外貨建て資産）において約-0.2%〜-0.3%の基準価額押し下げ圧力が働きました。',
-          affectedFunds: ['iFreeNext FANG+', 'Zテック20', 'S&P500', '東京海上外国株式'],
+            '환율이 전일 대비 소폭 하락(엔고/원고)함에 따라, 환헤지가 없는 해외 주식형 펀드에 약 -0.2%~-0.3%의 기준가 하락 압력이 발생했습니다.',
+          affectedFunds: ['iFreeNext FANG+', 'Z테크20', 'S&P500', '외국주식인덱스'],
         },
         {
-          title: 'アップル・テスラ・ディフェンシブ株の堅調さによる相殺効果',
+          title: '애플·테슬라 및 가치주의 견조한 방어 효과',
           impact: 'positive',
           category: 'tech',
           description:
-            '半導体が軟調な一方で、テスラ（+1.51%）やアップル（+0.49%）、大型バリュー株が底堅く推移し、S&P500や広範なインデックス（東京海上外国株式）の下落幅を限定的に抑えるクッション役を果たしました。',
-          affectedFunds: ['eMAXIS Slim S&P500', '東京海上外国株式'],
+            '반도체가 조정을 받는 동안 테슬라(+1.51%), 애플(+0.49%) 등 대형 우량주가 하방을 지지하며 S&P500 및 광범위 인덱스의 낙폭을 제한하는 쿠션 역할을 수행했습니다.',
+          affectedFunds: ['eMAXIS Slim S&P500', '도쿄해상 외국주식'],
         },
         {
-          title: '米長期金利低下による債券資産の安定',
+          title: '미국 10년물 국채 금리 안정에 따른 채권 자산 방어',
           impact: 'positive',
           category: 'macro',
           description:
-            '米10年国債利回りが3.88%へと小幅低下したことで、米国債券（IS米国債20年ヘッジ）の価格下落がストップし、株式リスクに対する分散効果を発揮しています。',
-          affectedFunds: ['IS米国債20年ヘッジ'],
+            '미국 10년물 국채 금리가 3.88%로 안정세를 보이며 미국채 20년물 펀드가 주식 리스크에 대한 훌륭한 분산 방어 효과를 발휘했습니다.',
+          affectedFunds: ['iShares 미국채 20년 환헤지'],
         },
       ],
       majorStocks,

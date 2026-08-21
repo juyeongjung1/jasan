@@ -3,7 +3,7 @@
 import React from 'react';
 import { ExchangeRates } from '@/types';
 import { Language, DICTIONARY } from '@/lib/i18n';
-import { RefreshCw, Plus, Database, DollarSign, TrendingUp, LineChart, Globe, Eye, EyeOff } from 'lucide-react';
+import { RefreshCw, Plus, Database, DollarSign, TrendingUp, LineChart, Globe } from 'lucide-react';
 
 interface HeaderProps {
   exchangeRates: ExchangeRates;
@@ -12,8 +12,6 @@ interface HeaderProps {
   lastFundSyncTime?: string | null;
   lang: Language;
   onToggleLanguage: () => void;
-  isMasked: boolean;
-  onToggleMask: () => void;
   onRefreshRates: () => void;
   onRefreshFunds?: () => void;
   onOpenAddModal: () => void;
@@ -29,8 +27,6 @@ export const Header: React.FC<HeaderProps> = ({
   isFetchingFunds,
   lang,
   onToggleLanguage,
-  isMasked,
-  onToggleMask,
   onRefreshRates,
   onRefreshFunds,
   onOpenAddModal,
@@ -68,34 +64,11 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Language Switcher Button (KO / JA) */}
             <button
               onClick={onToggleLanguage}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white rounded-lg text-xs font-bold border border-slate-700 transition"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600/30 hover:bg-blue-600/50 text-blue-200 hover:text-white rounded-lg text-xs font-bold border border-blue-500/40 transition shadow-sm"
               title="언어 변경 / 言語切り替え"
             >
               <Globe className="w-3.5 h-3.5 text-blue-400" />
               <span>{lang === 'ko' ? '🌐 한국어 (KO)' : '🌐 日本語 (JA)'}</span>
-            </button>
-
-            {/* Privacy Mask Toggle Button */}
-            <button
-              onClick={onToggleMask}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition ${
-                isMasked
-                  ? 'bg-amber-950/60 border-amber-800/80 text-amber-300 hover:bg-amber-900/60'
-                  : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
-              }`}
-              title="금액 숨기기/표시 (共有用プライバシー設定)"
-            >
-              {isMasked ? (
-                <>
-                  <EyeOff className="w-3.5 h-3.5 text-amber-400" />
-                  <span>{t.privacyMaskOn}</span>
-                </>
-              ) : (
-                <>
-                  <Eye className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>{t.privacyMaskOff}</span>
-                </>
-              )}
             </button>
 
             {/* FX USD/JPY */}

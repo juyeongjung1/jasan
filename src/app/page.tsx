@@ -314,8 +314,6 @@ export default function DashboardPage() {
         lastFundSyncTime={lastFundSyncTime}
         lang={lang}
         onToggleLanguage={() => setLang(lang === 'ko' ? 'ja' : 'ko')}
-        isMasked={isMasked}
-        onToggleMask={() => setIsMasked(!isMasked)}
         onRefreshRates={handleRefreshRates}
         onRefreshFunds={() => handleRefreshFundPrices(holdings)}
         onOpenAddModal={() => {
@@ -379,6 +377,7 @@ export default function DashboardPage() {
               totalCurrentValJpy={summary.totalCurrentValJpy}
               simulatedTotalValJpy={summary.simulatedTotalValJpy}
               simulatedDiffJpy={summary.simulatedDiffJpy}
+              lang={lang}
             />
           </div>
 
@@ -388,6 +387,7 @@ export default function DashboardPage() {
               currencyExposures={currencyExposures}
               categoryAllocations={categoryAllocations}
               accountAllocations={accountAllocations}
+              lang={lang}
             />
           </div>
 
@@ -410,6 +410,7 @@ export default function DashboardPage() {
               onDeletePlan={handleDeleteRecurringPlan}
               onExecuteManual={handleExecuteManual}
               currentTotalValJpy={summary.totalCurrentValJpy}
+              lang={lang}
             />
           </div>
 
