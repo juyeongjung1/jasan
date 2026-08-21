@@ -44,6 +44,7 @@ export const RecurringPlanSection: React.FC<RecurringPlanSectionProps> = ({
   lang = 'ko',
 }) => {
   const [expectedReturnRate, setExpectedReturnRate] = useState<number>(5);
+  const [simulationHorizon, setSimulationHorizon] = useState<number>(10); // 10, 15, 20, 25, 30
   const [showHistory, setShowHistory] = useState<boolean>(false);
 
   const activePlans = recurringPlans.filter((p) => p.isActive);
@@ -61,8 +62,8 @@ export const RecurringPlanSection: React.FC<RecurringPlanSectionProps> = ({
     nextDay = sortedDays[0];
   }
 
-  // 10年シミュレーションデータ（指数ベース・成長倍率 %）
-  const simulationYears = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  // 拡張シミュレーションデータ（10/15/20/25/30年・指数ベース・成長倍率 %）
+  const simulationYears = Array.from({ length: simulationHorizon }, (_, i) => i + 1);
   const monthlyRate = expectedReturnRate / 100 / 12;
 
   const simulationData = simulationYears.map((year) => {
@@ -191,7 +192,6 @@ export const RecurringPlanSection: React.FC<RecurringPlanSectionProps> = ({
       {/* Plan Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {recurringPlans.map((plan) => {
-          const holding = holdings.find((h) => h.id === plan.holdingId);
           return (
             <div
               key={plan.id}
@@ -252,31 +252,54 @@ export const RecurringPlanSection: React.FC<RecurringPlanSectionProps> = ({
         })}
       </div>
 
-      {/* 10-Year Compound Simulation (Percentages / Index Growth) */}
+      {/* Extended Compound Simulation (10 / 15 / 20 / 25 / 30 Years) */}
       <div className="bg-slate-50 dark:bg-slate-800/40 p-4 rounded-xl border border-slate-200 dark:border-slate-700/80 space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-amber-500" />
             <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-              {lang === 'ko' ? '10년 복리 자산 성장 시뮬레이션' : '10年間の複利資産成長シミュレーション'}
+              {lang === 'ko'
+                ? `${simulationHorizon}년 복리 자산 성장 시뮬레이션`
+                : `${simulationHorizon}年間の複利資産成長シミュレーション`}
             </h3>
           </div>
 
-          <div className="flex items-center gap-1.5 text-xs">
-            <span className="text-slate-500">{lang === 'ko' ? '상정 연수익률:' : '想定年利:'}</span>
-            {[3, 5, 7, 10, 15].map((rate) => (
-              <button
-                key={rate}
-                onClick={() => setExpectedReturnRate(rate)}
-                className={`px-2 py-0.5 rounded-lg text-xs font-bold transition ${
-                  expectedReturnRate === rate
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
-                }`}
-              >
-                {rate}%
-              </button>
-            ))}
+          <div className="flex flex-wrap items-center gap-2 text-xs">
+            {/* Horizon Selector (10 / 15 / 20 / 25 / 30 Years) */}
+            <div className="flex items-center gap-1 bg-slate-200/80 dark:bg-slate-800 p-1 rounded-lg">
+              <span className="text-[11px] text-slate-500 pl-1">{lang === 'ko' ? '기간:' : '期間:'}</span>
+              {[10, 15, 20, 25, 30].map((h) => (
+                <button
+                  key={h}
+                  onClick={() => setSimulationHorizon(h)}
+                  className={`px-2 py-0.5 rounded-md text-xs font-bold transition ${
+                    simulationHorizon === h
+                      ? 'bg-indigo-600 text-white shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  {h}{lang === 'ko' ? '년' : '年'}
+                </button>
+              ))}
+            </div>
+
+            {/* Expected Return Rate Selector */}
+            <div className="flex items-center gap-1 bg-slate-200/80 dark:bg-slate-800 p-1 rounded-lg">
+              <span className="text-[11px] text-slate-500 pl-1">{lang === 'ko' ? '연수익률:' : '年利:'}</span>
+              {[3, 5, 7, 10, 15].map((rate) => (
+                <button
+                  key={rate}
+                  onClick={() => setExpectedReturnRate(rate)}
+                  className={`px-2 py-0.5 rounded-md text-xs font-bold transition ${
+                    expectedReturnRate === rate
+                      ? 'bg-emerald-600 text-white shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  {rate}%
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
