@@ -219,7 +219,7 @@ export function translateHoldingName(name: string, lang: Language): string {
   if (name.includes('FANG+')) return 'iFreeNext FANG+ 인덱스 (적립식)';
   if (name.includes('Zテック') || name.includes('Z테크')) {
     if (name.includes('ミキ') || name.includes('미키') || name.includes('거치')) return 'iFreePlus 글로벌 트렌드 Z테크20 (미키 거치)';
-    return 'iFreePlus 글로벌 트렌드 Z테크20 (존 적립)';
+    return 'iFreePlus 글로벌 트렌드 Z테크20 (정주영 적립)';
   }
   if (name.includes('S&P') || name.includes('Slim')) return 'eMAXIS Slim 미국주식 (S&P 500)';
   if (name.includes('東京海上') || name.includes('外国株式') || name.includes('외국주식')) return '도쿄해상 셀렉션 외국주식 인덱스 (퇴직연금)';
@@ -233,6 +233,8 @@ export function translateHoldingName(name: string, lang: Language): string {
  */
 export function translateAccountName(name: string, lang: Language): string {
   if (lang === 'ja') {
+    if (name.includes('정주영') && (name.includes('라쿠텐') || name.includes('楽天'))) return 'ジョンの楽天証券口座';
+    if (name.includes('정주영') && (name.includes('연금') || name.includes('401k'))) return 'ジョンの確定拠出年金 (東京海上日動401k)';
     if (name.includes('라쿠텐') || name.includes('楽天')) return 'ジョンの楽天証券口座';
     if (name.includes('미키') || name.includes('ミキ')) return 'ミキの口座';
     if (name.includes('연금') || name.includes('401k') || name.includes('確定拠出')) return 'ジョンの確定拠出年金 (東京海上日動401k)';
@@ -241,9 +243,14 @@ export function translateAccountName(name: string, lang: Language): string {
   }
 
   // Korean
-  if (name.includes('楽天') || name.includes('라쿠텐') || name.includes('ジョン')) return '존의 라쿠텐 증권 계좌';
+  if (name.includes('楽天') || name.includes('라쿠텐') || name.includes('ジョン') || name.includes('존') || name.includes('정주영')) {
+    if (name.includes('연금') || name.includes('401k') || name.includes('確定拠出') || name.includes('東京海上')) {
+      return '정주영의 확정기여형 연금 (401k)';
+    }
+    return '정주영의 라쿠텐 증권 계좌';
+  }
   if (name.includes('ミキ') || name.includes('미키')) return '미키의 계좌 (가족)';
-  if (name.includes('確定拠出') || name.includes('401k') || name.includes('東京海上') || name.includes('연금')) return '존의 확정기여형 연금 (401k)';
+  if (name.includes('確定拠出') || name.includes('401k') || name.includes('東京海上') || name.includes('연금')) return '정주영의 확정기여형 연금 (401k)';
   if (name.includes('子供') || name.includes('ジュニア') || name.includes('자녀') || name.includes('어린이')) return '자녀 증권 계좌 (어린이 NISA)';
 
   return name;

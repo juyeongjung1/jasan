@@ -82,7 +82,7 @@ export const DEFAULT_EXCHANGE_RATES = {
 export const INITIAL_ACCOUNTS: Account[] = [
   {
     id: 'acc_john_rakuten',
-    name: '존의 라쿠텐 증권 계좌',
+    name: '정주영의 라쿠텐 증권 계좌',
     type: 'brokerage',
     color: '#BE185D',
     notes: '특정계좌 / 구 NISA / 적립 NISA',
@@ -96,7 +96,7 @@ export const INITIAL_ACCOUNTS: Account[] = [
   },
   {
     id: 'acc_john_dc',
-    name: '존의 확정기여형 연금 (401k)',
+    name: '정주영의 확정기여형 연금 (401k)',
     type: 'brokerage',
     color: '#059669',
     notes: '퇴직연금 플랜',
@@ -111,7 +111,7 @@ export const INITIAL_ACCOUNTS: Account[] = [
 ];
 
 export const INITIAL_HOLDINGS: AssetHolding[] = [
-  // 1. 존의 라쿠텐 증권 계좌
+  // 1. 정주영의 라쿠텐 증권 계좌
   {
     id: 'hold_john_1',
     accountId: 'acc_john_rakuten',
@@ -169,7 +169,7 @@ export const INITIAL_HOLDINGS: AssetHolding[] = [
   {
     id: 'hold_john_4',
     accountId: 'acc_john_rakuten',
-    name: 'iFreePlus 글로벌 트렌드 Z테크20 (존 적립)',
+    name: 'iFreePlus 글로벌 트렌드 Z테크20 (정주영 적립)',
     category: 'foreign_equity_fund',
     baseCurrency: 'USD',
     hasFxHedge: false,
@@ -223,7 +223,7 @@ export const INITIAL_HOLDINGS: AssetHolding[] = [
     updatedAt: new Date().toISOString(),
   },
 
-  // 3. 존의 확정기여형 연금
+  // 3. 정주영의 확정기여형 연금
   {
     id: 'hold_john_dc_1',
     accountId: 'acc_john_dc',
