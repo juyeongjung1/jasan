@@ -4,7 +4,14 @@ import React, { useState } from 'react';
 import { Account, AssetHolding, AssetCategory } from '@/types';
 import { HoldingAnalysis, formatCurrencyJpy, formatPercent } from '@/lib/calculations';
 import { CATEGORY_CONFIG, CURRENCY_CONFIG } from '@/lib/constants';
-import { Language, DICTIONARY, formatMaskedCurrency } from '@/lib/i18n';
+import {
+  Language,
+  DICTIONARY,
+  formatMaskedCurrency,
+  translateHoldingName,
+  translateAccountName,
+  translateNotes,
+} from '@/lib/i18n';
 import {
   ListFilter,
   Plus,
@@ -78,7 +85,7 @@ export const HoldingsTable: React.FC<HoldingsTableProps> = ({
               <option value="all">{lang === 'ko' ? '전체 계좌' : '全ての口座'}</option>
               {accounts.map((a) => (
                 <option key={a.id} value={a.id}>
-                  {a.name}
+                  {translateAccountName(a.name, lang)}
                 </option>
               ))}
             </select>
@@ -144,7 +151,7 @@ export const HoldingsTable: React.FC<HoldingsTableProps> = ({
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-1.5">
                         <span className="font-bold text-slate-900 dark:text-white text-xs">
-                          {holding.name}
+                          {translateHoldingName(holding.name, lang)}
                         </span>
                         {item.recurringPlan && item.recurringPlan.isActive && (
                           <span
@@ -163,7 +170,7 @@ export const HoldingsTable: React.FC<HoldingsTableProps> = ({
                         >
                           {catConfig.label}
                         </span>
-                        {holding.notes && <span className="truncate max-w-[200px]">{holding.notes}</span>}
+                        {holding.notes && <span className="truncate max-w-[240px]">{translateNotes(holding.notes, lang)}</span>}
                       </div>
                     </div>
                   </td>
@@ -176,7 +183,7 @@ export const HoldingsTable: React.FC<HoldingsTableProps> = ({
                         style={{ backgroundColor: `${account.color}15`, color: account.color }}
                       >
                         <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: account.color }} />
-                        {account.name}
+                        {translateAccountName(account.name, lang)}
                       </span>
                     ) : (
                       <span className="text-slate-400">-</span>
@@ -231,7 +238,7 @@ export const HoldingsTable: React.FC<HoldingsTableProps> = ({
                     </div>
                   </td>
 
-                  {/* Total Gain / Loss (率は常時明瞭に表示) */}
+                  {/* Total Gain / Loss */}
                   <td className="py-3.5 px-3 text-right">
                     <div
                       className={`font-bold text-xs ${

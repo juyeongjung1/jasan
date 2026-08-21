@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { AssetHolding } from '@/types';
 import { formatPercent } from '@/lib/calculations';
-import { Language, DICTIONARY, formatMaskedCurrency } from '@/lib/i18n';
+import { Language, DICTIONARY, formatMaskedCurrency, translateHoldingName } from '@/lib/i18n';
 import { MarketInsightSummary } from '@/app/api/market-insights/route';
 import {
   TrendingDown,
@@ -142,7 +142,7 @@ export const DailyContributionAnalysis: React.FC<DailyContributionAnalysisProps>
             {formatMaskedCurrency(totalNegativeJpy, isMasked)}
           </div>
           <span className="text-[11px] text-slate-600 dark:text-slate-400 block mt-0.5">
-            주요 요인: {negativeContributors[0]?.name.split('(')[0] || '-'} 등
+            주요 요인: {translateHoldingName(negativeContributors[0]?.name || '', lang).split('(')[0] || '-'} 등
           </span>
         </div>
 
@@ -186,7 +186,7 @@ export const DailyContributionAnalysis: React.FC<DailyContributionAnalysisProps>
                 >
                   <div className="min-w-0 flex-1">
                     <span className="font-bold text-xs text-slate-800 dark:text-slate-200 block truncate">
-                      {c.name}
+                      {translateHoldingName(c.name, lang)}
                     </span>
                     <span className="text-[10px] text-slate-400">
                       평가액: {formatMaskedCurrency(c.currentValJpy, isMasked)}
@@ -223,7 +223,7 @@ export const DailyContributionAnalysis: React.FC<DailyContributionAnalysisProps>
                 >
                   <div className="min-w-0 flex-1">
                     <span className="font-bold text-xs text-slate-800 dark:text-slate-200 block truncate">
-                      {c.name}
+                      {translateHoldingName(c.name, lang)}
                     </span>
                     <span className="text-[10px] text-slate-400">
                       평가액: {formatMaskedCurrency(c.currentValJpy, isMasked)}

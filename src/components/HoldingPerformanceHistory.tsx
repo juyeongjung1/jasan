@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { AssetHolding, HoldingHistoryPoint, TimeframeOption } from '@/types';
 import { filterHistoryByTimeframe } from '@/lib/historyGenerator';
 import { formatPercent } from '@/lib/calculations';
-import { Language, DICTIONARY, formatMaskedCurrency } from '@/lib/i18n';
+import { Language, DICTIONARY, formatMaskedCurrency, translateHoldingName, translateNotes } from '@/lib/i18n';
 import {
   TrendingUp,
   TrendingDown,
@@ -86,7 +86,7 @@ export const HoldingPerformanceHistory: React.FC<HoldingPerformanceHistoryProps>
   }, [rawChartData]);
 
   const selectedHolding = holdings.find((h) => h.id === selectedHoldingId);
-  const title = selectedHolding ? selectedHolding.name : t.allAssets;
+  const title = selectedHolding ? translateHoldingName(selectedHolding.name, lang) : t.allAssets;
 
   // 期間内の開始値と最新値
   const startPoint = enrichedChartData[0];
@@ -241,7 +241,7 @@ export const HoldingPerformanceHistory: React.FC<HoldingPerformanceHistoryProps>
               <option value="all">{t.allAssets}</option>
               {holdings.map((h) => (
                 <option key={h.id} value={h.id}>
-                  {h.name}
+                  {translateHoldingName(h.name, lang)}
                 </option>
               ))}
             </select>
@@ -542,7 +542,7 @@ export const HoldingPerformanceHistory: React.FC<HoldingPerformanceHistoryProps>
                         {row.fxRateUsd ? `¥${row.fxRateUsd.toFixed(1)}` : '-'}
                       </td>
                       <td className="py-2 px-3 text-slate-500 dark:text-slate-400 text-[11px]">
-                        {row.notes || '-'}
+                        {row.notes ? translateNotes(row.notes, lang) : '-'}
                       </td>
                     </tr>
                   );

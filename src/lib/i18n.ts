@@ -196,6 +196,95 @@ export const DICTIONARY: Record<Language, Translations> = {
 };
 
 /**
+ * 銘柄名の動的翻訳（キャッシュデータが日本語でも確実に韓国語/日本語へ変換）
+ */
+export function translateHoldingName(name: string, lang: Language): string {
+  if (lang === 'ja') {
+    if (name.includes('미국채') || name.includes('IS米国債')) return 'IS米国債20年ヘッジ (特定)';
+    if (name.includes('레바나스') || name.includes('レバナス')) return '楽天レバレッジNASDAQ-100(レバナス) (旧NISA)';
+    if (name.includes('FANG+')) return 'iFreeNext FANG+インデックス (積み立てNISA)';
+    if (name.includes('Z테크') || name.includes('Zテック')) {
+      if (name.includes('미키') || name.includes('거치')) return 'iFreePlus世界トレンド・テクノロジー株(Zテック20)';
+      return 'iFreePlus世界トレンド・テクノロジー株(Zテック20)';
+    }
+    if (name.includes('S&P') || name.includes('Slim')) return 'eMAXIS Slim 米国株式(S&P 500)';
+    if (name.includes('외국주식') || name.includes('도쿄해상') || name.includes('東京海上')) return '東京海上セレクション・外国株式インデックス';
+    if (name.includes('현금') || name.includes('現金')) return '日本円 現金 (待機資金)';
+    return name;
+  }
+
+  // Korean
+  if (name.includes('IS米国債') || name.includes('미국채')) return 'iShares 미국채 20년 환헤지';
+  if (name.includes('レバナス') || name.includes('레바나스') || name.includes('NASDAQ-100')) return '라쿠텐 레버리지 NASDAQ-100 (레바나스)';
+  if (name.includes('FANG+')) return 'iFreeNext FANG+ 인덱스 (적립식)';
+  if (name.includes('Zテック') || name.includes('Z테크')) {
+    if (name.includes('ミキ') || name.includes('미키') || name.includes('거치')) return 'iFreePlus 글로벌 트렌드 Z테크20 (미키 거치)';
+    return 'iFreePlus 글로벌 트렌드 Z테크20 (존 적립)';
+  }
+  if (name.includes('S&P') || name.includes('Slim')) return 'eMAXIS Slim 미국주식 (S&P 500)';
+  if (name.includes('東京海上') || name.includes('外国株式') || name.includes('외국주식')) return '도쿄해상 셀렉션 외국주식 인덱스 (퇴직연금)';
+  if (name.includes('日本円') || name.includes('現金') || name.includes('현금')) return '현금 대기자금 (엔화/원화)';
+
+  return name;
+}
+
+/**
+ * 口座名の動的翻訳
+ */
+export function translateAccountName(name: string, lang: Language): string {
+  if (lang === 'ja') {
+    if (name.includes('라쿠텐') || name.includes('楽天')) return 'ジョンの楽天証券口座';
+    if (name.includes('미키') || name.includes('ミキ')) return 'ミキの口座';
+    if (name.includes('연금') || name.includes('401k') || name.includes('確定拠出')) return 'ジョンの確定拠出年金 (東京海上日動401k)';
+    if (name.includes('자녀') || name.includes('어린이') || name.includes('子供')) return '子供の証券口座 (子供NISA)';
+    return name;
+  }
+
+  // Korean
+  if (name.includes('楽天') || name.includes('라쿠텐') || name.includes('ジョン')) return '존의 라쿠텐 증권 계좌';
+  if (name.includes('ミキ') || name.includes('미키')) return '미키의 계좌 (가족)';
+  if (name.includes('確定拠出') || name.includes('401k') || name.includes('東京海上') || name.includes('연금')) return '존의 확정기여형 연금 (401k)';
+  if (name.includes('子供') || name.includes('ジュニア') || name.includes('자녀') || name.includes('어린이')) return '자녀 증권 계좌 (어린이 NISA)';
+
+  return name;
+}
+
+/**
+ * 備考・メモの動的翻訳
+ */
+export function translateNotes(notes: string | undefined, lang: Language): string {
+  if (!notes) return '';
+
+  if (lang === 'ja') {
+    if (notes.includes('환헤지') || notes.includes('為替ヘッジ')) return '為替ヘッジあり（-30.35%）。積み立て無し';
+    if (notes.includes('5년간') || notes.includes('5年間') || notes.includes('旧NISA')) return '5年間積立運用。他資産への移行中 (+170.82%)';
+    if (notes.includes('매월 8일') || notes.includes('毎月8日')) {
+      if (notes.includes('36,000') || notes.includes('3.6만') || notes.includes('FANG')) return '毎月8日に36,000円積立 (+21.56%)';
+      return '毎月8日に64,000円積立 (+15.23%)';
+    }
+    if (notes.includes('일괄') || notes.includes('一括')) return '一括購入・長期保有 (+17.98%)';
+    if (notes.includes('장기') || notes.includes('長期')) return '長期保有 (+133.85%)';
+    if (notes.includes('29일') || notes.includes('29日') || notes.includes('급여') || notes.includes('給与')) return '毎月29日給与天引き積立 (+68.95%)';
+    if (notes.includes('무위험') || notes.includes('無リスク') || notes.includes('대기자금')) return '無リスク現金待機資金';
+    return notes;
+  }
+
+  // Korean
+  if (notes.includes('為替ヘッジ') || notes.includes('환헤지')) return '환헤지 채권형 (-30.35%). 적립 없음';
+  if (notes.includes('5年間') || notes.includes('旧NISA') || notes.includes('5년간')) return '5년간 적립 운용. 타 자산으로 분할 전환중 (+170.82%)';
+  if (notes.includes('毎月8日') || notes.includes('매월 8일')) {
+    if (notes.includes('36,000') || notes.includes('3.6만') || notes.includes('FANG')) return '매월 8일 정기 적립 (+21.56%)';
+    return '매월 8일 정기 적립 (+15.23%)';
+  }
+  if (notes.includes('一括') || notes.includes('일괄')) return '일괄 매수 보유 (+17.98%)';
+  if (notes.includes('長期') || notes.includes('장기')) return '장기 보유 (+133.85%)';
+  if (notes.includes('29日') || notes.includes('29일') || notes.includes('給与') || notes.includes('401k')) return '매월 29일 급여 자동 공제 적립 (+68.95%)';
+  if (notes.includes('無リスク') || notes.includes('待機資金') || notes.includes('子供NISA')) return '무위험 대기자금 및 쿠션 방어자산';
+
+  return notes;
+}
+
+/**
  * 金額をプライバシー保護のためにマスクするかフォーマットする
  */
 export function formatMaskedCurrency(

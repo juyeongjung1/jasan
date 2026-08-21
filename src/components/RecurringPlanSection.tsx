@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Account, AssetHolding, RecurringPlan, AccumulationLog } from '@/types';
-import { Language, formatMaskedCurrency } from '@/lib/i18n';
+import { Language, formatMaskedCurrency, translateHoldingName, translateAccountName } from '@/lib/i18n';
 import {
   Calendar,
   Plus,
@@ -84,12 +84,12 @@ export const RecurringPlanSection: React.FC<RecurringPlanSectionProps> = ({
 
   const getHoldingName = (holdingId: string) => {
     const h = holdings.find((item) => item.id === holdingId);
-    return h ? h.name : holdingId;
+    return h ? translateHoldingName(h.name, lang) : holdingId;
   };
 
   const getAccountName = (accountId: string) => {
     const a = accounts.find((item) => item.id === accountId);
-    return a ? a.name : accountId;
+    return a ? translateAccountName(a.name, lang) : accountId;
   };
 
   return (
